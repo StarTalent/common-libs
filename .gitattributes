@@ -1,0 +1,3 @@
+#Git attributes
+
+*.groovy    filter=sensitiveInfo
