@@ -8,8 +8,7 @@ class JsonUtilities {
     static Map getJsonMap(String jsonRaw) {
         try {
             if (jsonRaw != null && jsonRaw instanceof String && !jsonRaw.isEmpty()) {
-                def json = new JsonSlurper()
-                def object = json.parseText(jsonRaw)
+                def object = new JsonSlurper().parseText(jsonRaw)
                 if (object instanceof Map) {
                     object.put("isArray", false)
                     return object

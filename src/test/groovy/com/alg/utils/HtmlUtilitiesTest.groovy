@@ -1,48 +1,32 @@
 package com.alg.utils
 
 class HtmlUtilitiesTest extends GroovyTestCase {
-    final String TEXT_RAW = 'classify\t\n"frame"ñ&l'
-    final String TEXT_RESULT = 'classify "frame"ñ&l'
-
-
-    void testEscapeTextArea() {
-        def result = HtmlUtilities.escapeTextArea(TEXT_RAW)
-        assertEquals(TEXT_RESULT, result)
-    }
+    final String TEXT_RAW = "Lorem & ipsum dolor\nÑunc ornare &amp; laoreet aliquet.\n\tNunc ac libero\n\r\tNullam imperdiet.\n"
+    final String TEXT_HTML = "<p>Pellentesqué<br/>Vestibülum</p><ul><li>Lorem & ipsum.</li></ul><h1>HTML Ipsum Presents</h1>"
 
     void testEscape() {
+        final def EXPECTED = "Lorem & ipsum dolor<br/>Ñunc ornare &amp; laoreet aliquet.<br/>\tNunc ac libero<br/>\tNullam imperdiet.<br/>"
         def result = HtmlUtilities.escape(TEXT_RAW)
-        assertEquals(TEXT_RESULT, result)
-    }
-
-    void testEscapeTags() {
-        def result = HtmlUtilities.escapeTags("<$TEXT_RAW>")
-        assertEquals(TEXT_RESULT, result)
+        assertEquals(EXPECTED, result)
     }
 
     void testEscapeBr() {
-        def result = HtmlUtilities.escapeBr("$TEXT_RAW<br/><br />")
-        assertEquals("${TEXT_RESULT}\n\n".toString(), result)
-    }
-
-    void testEscapeSpecial() {
-        def result = HtmlUtilities.escapeSpecial("<span>$TEXT_RAW</span>")
-        assertEquals(TEXT_RESULT, result)
+        final String TEST = "Hello\nWorld"
+        final String EXPECTED = "Hello<br/>World"
+        def result = HtmlUtilities.escapeBr(TEST)
+        assertEquals(EXPECTED, result)
     }
 
     void testConvertHtmlToPlainText() {
-        def result = HtmlUtilities.convertHtmlToPlainText("<span>$TEXT_RAW</span>")
-        assertEquals(TEXT_RESULT, result)
+        def EXPECTED = "Pellentesqué Vestibülum Lorem & ipsum. HTML Ipsum Presents"
+        def result = HtmlUtilities.convertHtmlToPlainText(TEXT_HTML)
+        assertEquals(EXPECTED, result)
     }
 
     void testTestConvertHtmlToPlainText() {
-        int size = 30
-        int splitSize = 20
-        def data = ""
-        [1..size].each {
-            data += it
-        }
-        def result = HtmlUtilities.convertHtmlToPlainText("<span>${data}</span>", splitSize)
-        assertEquals("${[1..splitSize].join("")}...", result)
+        final int SIZE = 20
+        def expected = HtmlUtilities.convertHtmlToPlainText(TEXT_HTML).substring(0, SIZE)
+        def result = HtmlUtilities.convertHtmlToPlainText(TEXT_HTML, SIZE)
+        assertEquals("${expected}...", result)
     }
 }

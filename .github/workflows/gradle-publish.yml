@@ -1,6 +1,3 @@
-# This workflow will build a package using Gradle and then publish it to GitHub packages when a release is created
-# For more information see: https://github.com/actions/setup-java#publishing-using-gradle
-
 name: Gradle Package
 
 on:
@@ -20,8 +17,8 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
-        server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
-        settings-path: ${{ github.workspace }} # location for the settings.xml file
+        server-id: github
+        settings-path: ${{ github.workspace }}
 
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
@@ -30,10 +27,14 @@ jobs:
     - name: Test with Gradle
       run: ./gradlew test
 
-    # The USERNAME and TOKEN need to correspond to the credentials environment variables used in
-    # the publishing section of your build.gradle
+    - name: Build Number Generator
+      id: buildnumber
+      uses: einaregilsson/build-number@v2
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+
     - name: Publish to GitHub Packages
-      run: ./gradlew publish
+      run: ./gradlew publish -Pversion=1.0.${{ steps.buildnumber.outputs.build_number }}
       env:
         USERNAME: ${{ github.actor }}
         TOKEN: ${{ secrets.GITHUB_TOKEN }}
